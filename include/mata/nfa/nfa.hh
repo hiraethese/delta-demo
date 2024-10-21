@@ -226,11 +226,6 @@ public:
     Run get_shortest_accepting_run_from_state(State q, const std::vector<State>& distances_to_final) const;
 
     /**
-     * @brief Returns vector ret where ret[q].second is the shortest path from any initial state to q and ret[q].first is the length of this path
-     */
-    std::vector<std::pair<State, Run>> distances_from_initial_with_runs() const;
-
-    /**
      * Remove epsilon transitions from the automaton.
      */
     void remove_epsilon(Symbol epsilon = EPSILON);
