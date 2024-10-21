@@ -147,6 +147,26 @@ std::vector<std::pair<State, Run>> Nfa::distances_from_initial_with_runs() const
     return distances;
 }
 
+
+std::vector<State> Nfa::distances_to_final() const {
+    return revert(*this).distances_from_initial();
+}
+
+Run Nfa::get_shortest_accepting_run_from_state(State q, const std::vector<State>& distances_to_final) const {
+    Run result{{}, {q}};
+    while (!final[q]) {
+        for (Move move : delta[q].moves()) {
+            if (distances_to_final[move.target] < distances_to_final[q]) {
+                result.word.push_back(move.symbol);
+                result.path.push_back(move.target);
+                q = move.target;
+                break;
+            }
+        }
+    }
+    return result;
+}
+
 Nfa& Nfa::trim(StateRenaming* state_renaming) {
 #ifdef _STATIC_STRUCTURES_
     BoolVector useful_states{ useful_states() };

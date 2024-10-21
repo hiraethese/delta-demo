@@ -212,6 +212,20 @@ public:
     std::vector<State> distances_from_initial() const;
 
     /**
+     * @brief Returns vector ret where ret[q] is the length of the shortest path from q to any final state
+     */
+    std::vector<State> distances_to_final() const;
+
+    /**
+     * @brief Get some shortest accepting run from state @p q
+     * 
+     * Assumes that @p q is a state of this automaton and that there is some accepting run from q
+     * 
+     * @param distances_to_final Vector of the lengths of the shortest runs from states (can be computed using distances_to_final())
+     */
+    Run get_shortest_accepting_run_from_state(State q, const std::vector<State>& distances_to_final) const;
+
+    /**
      * @brief Returns vector ret where ret[q].second is the shortest path from any initial state to q and ret[q].first is the length of this path
      */
     std::vector<std::pair<State, Run>> distances_from_initial_with_runs() const;

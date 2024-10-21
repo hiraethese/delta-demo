@@ -81,8 +81,8 @@ bool mata::nfa::algorithms::is_included_antichains(
     //Is |S| < |S'| for the inut pairs (q,S) and (q',S')?
     // auto smaller_set = [](const ProdStateType & a, const ProdStateType & b) { return std::get<1>(a).size() < std::get<1>(b).size(); };
 
-    std::vector<std::pair<State, Run>> distances_smaller = revert(smaller).distances_from_initial_with_runs(); // we assume that revert keeps the same number of states, so that Run.path is correct for cex
-    std::vector<State> distances_bigger = revert(bigger).distances_from_initial();
+    std::vector<State> distances_smaller = smaller.distances_to_final();
+    std::vector<State> distances_bigger = bigger.distances_to_final();
 
     // auto closer_dist = [&](const ProdStateType & a, const ProdStateType & b) {
     //     return distances_smaller[a.first] < distances_smaller[b.first];
@@ -108,7 +108,7 @@ bool mata::nfa::algorithms::is_included_antichains(
     };
 
     auto lengths_incompatible = [&](const ProdStateType& pair) {
-        return distances_smaller[std::get<0>(pair)].first < std::get<2>(pair);
+        return distances_smaller[std::get<0>(pair)] < std::get<2>(pair);
     };
 
     auto insert_to_pairs = [&](ProdStatesType & pairs,const ProdStateType & pair) {
@@ -176,11 +176,7 @@ bool mata::nfa::algorithms::is_included_antichains(
                     (smaller.final[smaller_succ] && !bigger.final.intersects_with(bigger_succ)))
                 {
                     if (cex != nullptr) {
-                        cex->word.clear();
-                        cex->path.clear();
-                        cex->word = distances_smaller[smaller_succ].second.word;
                         cex->word.push_back(smaller_symbol);
-                        cex->path = distances_smaller[smaller_succ].second.path;
                         cex->path.push_back(smaller_state);
                         ProdStateType trav = prod_state;
                         while (paths.at(trav).first != trav)
@@ -192,6 +188,11 @@ bool mata::nfa::algorithms::is_included_antichains(
 
                         std::reverse(cex->word.begin(), cex->word.end());
                         std::reverse(cex->path.begin(), cex->path.end());
+
+                        // it is poosible that lengths_incompatible(succ) was true, which means that cex is not finished, we need to add some shortest accepting run from smaller_suc
+                        Run leftover = smaller.get_shortest_accepting_run_from_state(smaller_succ, distances_smaller);
+                        cex->word.insert(cex->word.end(), leftover.word.begin(), leftover.word.end());
+                        cex->path.insert(cex->path.end(), leftover.path.begin(), leftover.path.end());
                     }
 
                     return false;
