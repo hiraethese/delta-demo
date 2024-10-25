@@ -21,9 +21,21 @@ bool mata::nfa::algorithms::is_included_naive(
     } else {
         bigger_cmpl = complement(bigger, *alphabet);
     }
-    Nfa nfa_isect = intersection(smaller, bigger_cmpl);
 
-    return nfa_isect.is_lang_empty(cex);
+    std::unordered_map<std::pair<State,State>,State> prod_map;
+    Nfa nfa_isect = intersection(smaller, bigger_cmpl, Limits::max_symbol, &prod_map);
+
+    bool result = nfa_isect.is_lang_empty(cex);
+    if (cex != nullptr && !result) {
+        std::unordered_map<State,State> nfa_isect_state_to_smaller_state;
+        for (const auto& prod_map_item : prod_map) {
+            nfa_isect_state_to_smaller_state[prod_map_item.second] = prod_map_item.first.first;
+        }
+        for (State& path_state : cex->path) {
+            path_state = nfa_isect_state_to_smaller_state[path_state];
+        }
+    }
+    return result;
 } // is_included_naive }}}
 
 
@@ -69,8 +81,8 @@ bool mata::nfa::algorithms::is_included_antichains(
     //Is |S| < |S'| for the inut pairs (q,S) and (q',S')?
     // auto smaller_set = [](const ProdStateType & a, const ProdStateType & b) { return std::get<1>(a).size() < std::get<1>(b).size(); };
 
-    std::vector<State> distances_smaller = revert(smaller).distances_from_initial();
-    std::vector<State> distances_bigger = revert(bigger).distances_from_initial();
+    std::vector<State> distances_smaller = smaller.distances_to_final();
+    std::vector<State> distances_bigger = bigger.distances_to_final();
 
     // auto closer_dist = [&](const ProdStateType & a, const ProdStateType & b) {
     //     return distances_smaller[a.first] < distances_smaller[b.first];
@@ -118,7 +130,7 @@ bool mata::nfa::algorithms::is_included_antichains(
         if (smaller.final[state] &&
             are_disjoint(bigger.initial, bigger.final))
         {
-            if (cex != nullptr) { cex->word.clear(); }
+            if (cex != nullptr) { cex->word.clear(); cex->path = {state}; }
             return false;
         }
 
@@ -160,20 +172,27 @@ bool mata::nfa::algorithms::is_included_antichains(
             for (const State& smaller_succ : smaller_move.targets) {
                 const ProdStateType succ = {smaller_succ, bigger_succ, min_dst(bigger_succ)};
 
-                if (lengths_incompatible(succ) || (smaller.final[smaller_succ] &&
-                    !bigger.final.intersects_with(bigger_succ)))
+                if (lengths_incompatible(succ) ||
+                    (smaller.final[smaller_succ] && !bigger.final.intersects_with(bigger_succ)))
                 {
                     if (cex != nullptr) {
-                        cex->word.clear();
                         cex->word.push_back(smaller_symbol);
-                        ProdStateType trav = prod_state;
-                        while (paths[trav].first != trav)
+                        cex->path.push_back(smaller_state);
+                        auto next_on_path = paths.find(prod_state);
+                        while (next_on_path->second.first != next_on_path->first)
                         { // go back until initial state
-                            cex->word.push_back(paths[trav].second);
-                            trav = paths[trav].first;
+                            cex->word.push_back(next_on_path->second.second);
+                            cex->path.push_back(std::get<0>(next_on_path->second.first));
+                            next_on_path = paths.find(next_on_path->second.first);
                         }
 
                         std::reverse(cex->word.begin(), cex->word.end());
+                        std::reverse(cex->path.begin(), cex->path.end());
+
+                        // it is poosible that lengths_incompatible(succ) was true, which means that cex is not finished, we need to add some shortest accepting run from smaller_suc
+                        Run leftover = smaller.get_shortest_accepting_run_from_state(smaller_succ, distances_smaller);
+                        cex->word.insert(cex->word.end(), leftover.word.begin(), leftover.word.end());
+                        cex->path.insert(cex->path.end(), leftover.path.begin(), leftover.path.end());
                     }
 
                     return false;
