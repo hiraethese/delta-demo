@@ -219,7 +219,7 @@ public:
     /**
      * @brief Get some shortest accepting run from state @p q
      * 
-     * Assumes that @p q is a state of this automaton and that there is some accepting run from q
+     * Assumes that @p q is a state of this automaton and that there is some accepting run from @p q
      * 
      * @param distances_to_final Vector of the lengths of the shortest runs from states (can be computed using distances_to_final())
      */
