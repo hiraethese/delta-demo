@@ -48,7 +48,7 @@ public:
 class SymbolPost {
 public:
     Symbol symbol{};
-    StateSet targets{};
+    StateSet targets{}; // TODO: Change this to CounterStateSet targets{}.
 
     SymbolPost() = default;
     explicit SymbolPost(Symbol symbol) : symbol{ symbol }, targets{} {}

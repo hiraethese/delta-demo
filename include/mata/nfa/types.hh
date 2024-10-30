@@ -15,6 +15,38 @@ extern const std::string TYPE_NFA;
 using State = unsigned long;
 using StateSet = mata::utils::OrdVector<State>;
 
+/// State with counter (State state and void* counter_ptr).
+struct CounterState {
+    State state; ///< Automaton state.
+    void* counter_ptr; ///< Pointer to the counter table when transitioning to a state.
+
+    // Constructor to allow implicit conversion from state.
+    CounterState(State state, void* counter_ptr = nullptr)
+        : state(state), counter_ptr(counter_ptr) {}
+
+    // Conversion operator to allow implicit conversion to state.
+    operator State() const { return state; }
+
+    // Comparison operators to allow comparison with state.
+    bool operator==(State other) const { return state == other; }
+    bool operator!=(State other) const { return state != other; }
+    bool operator<(State other) const { return state < other; }
+    bool operator<=(State other) const { return state <= other; }
+    bool operator>(State other) const { return state > other; }
+    bool operator>=(State other) const { return state >= other; }
+
+    bool operator==(const CounterState& other) const {
+        return state == other.state && counter_ptr == other.counter_ptr;
+    }
+
+    bool operator!=(const CounterState& other) const {
+        return state != other.state || counter_ptr != other.counter_ptr;
+    }
+};
+
+// TODO: Conversion between CounterStateSet and StateSet.
+using CounterStateSet = mata::utils::OrdVector<CounterState>;
+
 struct Run {
     Word word{}; ///< A finite-length word.
     std::vector<State> path{}; ///< A finite-length path through automaton.
