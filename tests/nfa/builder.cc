@@ -18,6 +18,44 @@ using Word = std::vector<Symbol>;
 TEST_CASE("parse_from_mata()") {
     Delta delta;
 
+    SECTION("Empty automaton - No initial and final") {
+        Nfa nfa{ delta, {}, {} };
+        SECTION("from String") {
+            std::string empty_nfa_str = "@NFA-explicit\n%Alphabet-auto\n";
+            Nfa empty_nfa{ mata::nfa::builder::parse_from_mata(empty_nfa_str) };
+            CHECK(are_equivalent(empty_nfa, nfa));
+        }
+
+        SECTION("from file") {
+            std::filesystem::path nfa_file{ "./temp-test-parse_from_mata-empty_nfa.mata" };
+            std::fstream file{ nfa_file, std::fstream::in | std::fstream::out | std::fstream::trunc };
+            file << "@NFA-explicit\n%Alphabet-auto\n";
+            file.close();
+            Nfa parsed{ mata::nfa::builder::parse_from_mata(nfa_file) };
+            std::filesystem::remove(nfa_file);
+            CHECK(are_equivalent(parsed, nfa));
+        }
+
+    }
+
+    SECTION("Empty automaton with empty final and initial") {
+        Nfa nfa{ delta, {}, {} };
+        SECTION("from String") {
+            std::string empty_nfa_str = "@NFA-explicit\n%Alphabet-auto\n%Initial\n%Final\n";
+            Nfa empty_nfa{ mata::nfa::builder::parse_from_mata(empty_nfa_str) };
+            CHECK(are_equivalent(empty_nfa, nfa));
+        }
+        SECTION("from file") {
+            std::filesystem::path nfa_file{ "./temp-test-parse_from_mata-empty_nfa-empty_initial_final.mata" };
+            std::fstream file{ nfa_file, std::fstream::in | std::fstream::out | std::fstream::trunc };
+            file << "@NFA-explicit\n%Alphabet-auto\n%Initial\n%Final\n";
+            file.close();
+            Nfa parsed{ mata::nfa::builder::parse_from_mata(nfa_file) };
+            std::filesystem::remove(nfa_file);
+            CHECK(are_equivalent(parsed, nfa));
+        }
+    }
+
     SECTION("Simple automaton") {
         delta.add(0, 0, 0);
         delta.add(0, 1, 1);
