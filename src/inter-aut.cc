@@ -292,6 +292,11 @@ bool has_atmost_one_auto_naming(const mata::IntermediateAut& aut) {
             }
         }
 
+        // In case of no transition
+        if (opstack.size() != 1) {
+            return {};
+        }
+
         assert(opstack.size() == 1);
         return std::move(*opstack.begin());
 }
