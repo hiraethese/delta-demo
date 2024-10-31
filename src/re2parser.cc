@@ -252,7 +252,7 @@ namespace {
                     }
                 }
             }
-            RegexParser::renumber_states(output_nfa, explicit_nfa);
+            *output_nfa = Nfa(explicit_nfa).trim();
         }
 
     private: // private methods
@@ -438,16 +438,6 @@ namespace {
                 }
                 nfa.final.insert(target_state);
             }
-        }
-
-        /**
-         * Renumbers the states of the input_nfa to be from <0, numberOfStates>
-         * @param input_nfa Nfa which states should be renumbered
-         * @return Equivalent Nfa as input_nfa but trimmed and with states from interval <0, numberOfStates>
-         */
-        static Nfa renumber_states(Nfa* output_nfa, Nfa &input_nfa) {
-            *output_nfa = Nfa(input_nfa.delta, input_nfa.initial, input_nfa.final).trim();
-            return *output_nfa;
         }
 
         /**
