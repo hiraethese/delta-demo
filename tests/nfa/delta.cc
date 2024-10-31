@@ -7,7 +7,8 @@
 #include "mata/nfa/delta.hh"
 #include "mata/nfa/nfa.hh"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 using namespace mata::nfa;
 

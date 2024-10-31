@@ -2,7 +2,6 @@ add_executable(tests
 		ord-vector.cc
 		sparse-set.cc
 		synchronized-iterator.cc
-		main.cc
 		alphabet.cc
 		parser.cc
 		re2parser.cc
@@ -19,7 +18,7 @@ add_executable(tests
 		strings/nfa-string-solving.cc
 )
 
-target_link_libraries(tests PRIVATE libmata Catch2::Catch2)
+target_link_libraries(tests PRIVATE libmata Catch2::Catch2WithMain)
 
 # Add common compile warnings.
 target_compile_options(tests PRIVATE "$<$<CONFIG:DEBUG>:${MATA_COMMON_WARNINGS}>")
