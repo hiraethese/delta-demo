@@ -11,7 +11,10 @@
 #include <string>
 #include <vector>
 
-#include "mata/utils/utils.hh"
+// #include "mata/utils/utils.hh"
+
+// Note: Temporary local includes for convenience.
+#include "../utils/utils.hh"
 
 /**
  * Parser from `.mata` format to automata (currently `Nfa` and `Afa` are supported).

@@ -3,10 +3,16 @@
 #ifndef MATA_DELTA_HH
 #define MATA_DELTA_HH
 
-#include "mata/utils/sparse-set.hh"
-#include "mata/utils/synchronized-iterator.hh"
-#include "mata/alphabet.hh"
-#include "mata/nfa/types.hh"
+// #include "mata/utils/sparse-set.hh"
+// #include "mata/utils/synchronized-iterator.hh"
+// #include "mata/alphabet.hh"
+// #include "mata/nfa/types.hh"
+
+// Note: Temporary local includes for convenience.
+#include "../utils/sparse-set.hh"
+#include "../utils/synchronized-iterator.hh"
+#include "../alphabet.hh"
+#include "../nfa/types.hh"
 
 #include <iterator>
 

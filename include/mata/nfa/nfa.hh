@@ -20,13 +20,24 @@
 #include <vector>
 #include <queue>
 
-#include "mata/alphabet.hh"
-#include "mata/parser/parser.hh"
-#include "mata/utils/utils.hh"
-#include "mata/utils/ord-vector.hh"
-#include "mata/parser/inter-aut.hh"
-#include "mata/utils/synchronized-iterator.hh"
-#include "mata/utils/sparse-set.hh"
+// #include "mata/alphabet.hh"
+// #include "mata/parser/parser.hh"
+// #include "mata/utils/utils.hh"
+// #include "mata/utils/ord-vector.hh"
+// #include "mata/parser/inter-aut.hh"
+// #include "mata/utils/synchronized-iterator.hh"
+// #include "mata/utils/sparse-set.hh"
+// #include "types.hh"
+// #include "delta.hh"
+
+// Note: Temporary local includes for convenience.
+#include "../alphabet.hh"
+#include "../parser/parser.hh"
+#include "../utils/utils.hh"
+#include "../utils/ord-vector.hh"
+#include "../parser/inter-aut.hh"
+#include "../utils/synchronized-iterator.hh"
+#include "../utils/sparse-set.hh"
 #include "types.hh"
 #include "delta.hh"
 

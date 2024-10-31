@@ -3,8 +3,12 @@
 #ifndef MATA_TYPES_HH
 #define MATA_TYPES_HH
 
-#include "mata/alphabet.hh"
-#include "mata/parser/parser.hh"
+// #include "mata/alphabet.hh"
+// #include "mata/parser/parser.hh"
+
+// Note: Temporary local includes for convenience.
+#include "../alphabet.hh"
+#include "../parser/parser.hh"
 
 #include <limits>
 
