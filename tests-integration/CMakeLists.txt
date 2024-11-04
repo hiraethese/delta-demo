@@ -18,14 +18,20 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/inputs/double-automata.input.in" "${
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/utils/config.hh.in" "${CMAKE_CURRENT_SOURCE_DIR}/src/utils/config.hh" @ONLY)
 
-file(GLOB SOURCES "src/*.cc")
+file(
+    GLOB_RECURSE SOURCES
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc
+)
+list(FILTER SOURCES EXCLUDE REGEX ".*/tests-integration/src/utils/.*")
 foreach(SOURCE ${SOURCES})
     get_filename_component(TARGET ${SOURCE} NAME_WE)
 
-    add_executable(${TARGET}
-        ${SOURCE}
-        src/utils/utils.cc
-    )
+    get_filename_component(TARGET_PATH ${SOURCE} DIRECTORY)
+    file(RELATIVE_PATH TARGET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/" "${TARGET_PATH}")
+
+    add_executable(${TARGET} ${SOURCE} src/utils/utils.cc)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PATH})
     target_link_libraries(${TARGET} libmata)
 
     # Add common compile warnings.

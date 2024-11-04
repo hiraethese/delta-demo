@@ -1,5 +1,9 @@
-#include "utils/utils.hh"
+// TODO: Modify when copying to target `/mata/tests-integration/src/utils/`.
+#include "../utils/utils.hh"
+#include "../utils/config.hh"
+
 #include "mata/nfa/nfa.hh"
+
 #include <iostream>
 #include <iomanip>
 #include <chrono>
@@ -14,7 +18,7 @@ int main() {
     TIME_BEGIN(tmp);
 
     /**************************************************
-     *  HERE COMES YOUR CODE THAT YOU WANT TO PROFILE *
+     * TODO: HERE COMES YOUR CODE YOU WANT TO PROFILE *
      **************************************************/
 
     TIME_END(tmp);

@@ -1,10 +1,11 @@
 /**
- * NOTE: Input automata, that are of type `NFA-bits` are mintermized!
+ * TODO: Input automata, that are of type `NFA-bits` are mintermized!
  *  - If you want to skip mintermization, set the variable `MINTERMIZE_AUTOMATA` below to `false`
  */
 
-#include "utils/utils.hh"
-#include "utils/config.hh"
+// TODO: Modify when copying to target `/mata/tests-integration/src/utils/`.
+#include "../utils/utils.hh"
+#include "../utils/config.hh"
 
 #include "mata/nfa/nfa.hh"
 
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
     std::cout << std::fixed << std::setprecision(4);
 
     /**
-     * NOTE: Comment out automata, that you do not want to process or add your own automata.
+     * TODO: Comment out automata that you do not want to process or add your own automata.
      */
     std::vector<std::string> automata = {
             mata::PerformanceTesting::AUTOMATA_DIR + "/b-armc-incl-easiest/aut1.mata",
@@ -129,7 +130,7 @@ int main(int argc, char *argv[])
         TIME_BEGIN(tmp);
 
         /**************************************************
-         *  HERE COMES YOUR CODE THAT YOU WANT TO PROFILE *
+         * TODO: HERE COMES YOUR CODE YOU WANT TO PROFILE *
          *   - Use alphabet alph as source alphabet       *
          *   - Use Nfa aut as source automaton            *
          *   - e.g. complement(aut, alph);                *
