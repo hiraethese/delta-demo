@@ -2,7 +2,8 @@
 
 #include <unordered_set>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "utils.hh"
 
@@ -1120,7 +1121,7 @@ TEST_CASE("mata::nfa::construct() invalid calls")
         parsec.type = "FA";
 
         CHECK_THROWS_WITH(builder::construct(parsec),
-                          Catch::Contains("expecting type"));
+                          Catch::Matchers::ContainsSubstring("expecting type"));
     }
 
     SECTION("construct() call with an epsilon transition")
@@ -1129,7 +1130,7 @@ TEST_CASE("mata::nfa::construct() invalid calls")
         parsec.body = { {"q1", "q2"} };
 
         CHECK_THROWS_WITH(builder::construct(parsec),
-                          Catch::Contains("Epsilon transition"));
+                          Catch::Matchers::ContainsSubstring("Epsilon transition"));
     }
 
     SECTION("construct() call with a nonsense transition")
@@ -1138,7 +1139,7 @@ TEST_CASE("mata::nfa::construct() invalid calls")
         parsec.body = { {"q1", "a", "q2", "q3"} };
 
         CHECK_THROWS_WITH(plumbing::construct(&aut, parsec),
-                          Catch::Contains("Invalid transition"));
+                          Catch::Matchers::ContainsSubstring("Invalid transition"));
     }
 } // }}}
 
@@ -1873,7 +1874,7 @@ TEST_CASE("mata::nfa::is_universal()")
         OnTheFlyAlphabet alph{};
 
         CHECK_THROWS_WITH(aut.is_universal(alph, params),
-            Catch::Contains("requires setting the \"algo\" key"));
+            Catch::Matchers::ContainsSubstring("requires setting the \"algo\" key"));
     }
 
     SECTION("wrong parameters 2")
@@ -1882,7 +1883,7 @@ TEST_CASE("mata::nfa::is_universal()")
         params["algorithm"] = "foo";
 
         CHECK_THROWS_WITH(aut.is_universal(alph, params),
-            Catch::Contains("received an unknown value"));
+            Catch::Matchers::ContainsSubstring("received an unknown value"));
     }
 } // }}}
 
@@ -2184,7 +2185,7 @@ q9 196608 q9
 q10 67 q5
 )"
             ))[0]);
-        
+
         for (const auto& algo : ALGORITHMS) {
             SECTION(algo)
             {
@@ -2208,7 +2209,7 @@ q10 67 q5
         OnTheFlyAlphabet alph{};
 
         CHECK_THROWS_WITH(is_included(smaller, bigger, &alph, params),
-            Catch::Contains("requires setting the \"algo\" key"));
+            Catch::Matchers::ContainsSubstring("requires setting the \"algo\" key"));
         CHECK_NOTHROW(is_included(smaller, bigger, &alph));
     }
 
@@ -2218,7 +2219,7 @@ q10 67 q5
         params["algorithm"] = "foo";
 
         CHECK_THROWS_WITH(is_included(smaller, bigger, &alph, params),
-            Catch::Contains("received an unknown value"));
+            Catch::Matchers::ContainsSubstring("received an unknown value"));
         CHECK_NOTHROW(is_included(smaller, bigger, &alph));
     }
 } // }}}
@@ -2370,9 +2371,9 @@ TEST_CASE("mata::nfa::are_equivalent")
         OnTheFlyAlphabet alph{};
 
         CHECK_THROWS_WITH(are_equivalent(smaller, bigger, &alph, params),
-                          Catch::Contains("requires setting the \"algo\" key"));
+                          Catch::Matchers::ContainsSubstring("requires setting the \"algo\" key"));
         CHECK_THROWS_WITH(are_equivalent(smaller, bigger, params),
-                          Catch::Contains("requires setting the \"algo\" key"));
+                          Catch::Matchers::ContainsSubstring("requires setting the \"algo\" key"));
         CHECK_NOTHROW(are_equivalent(smaller, bigger));
     }
 
@@ -2382,9 +2383,9 @@ TEST_CASE("mata::nfa::are_equivalent")
         params["algorithm"] = "foo";
 
         CHECK_THROWS_WITH(are_equivalent(smaller, bigger, &alph, params),
-                          Catch::Contains("received an unknown value"));
+                          Catch::Matchers::ContainsSubstring("received an unknown value"));
         CHECK_THROWS_WITH(are_equivalent(smaller, bigger, params),
-                          Catch::Contains("received an unknown value"));
+                          Catch::Matchers::ContainsSubstring("received an unknown value"));
         CHECK_NOTHROW(are_equivalent(smaller, bigger));
     }
 }
@@ -2626,7 +2627,7 @@ TEST_CASE("mata::nfa::is_complete()")
         aut.delta.add(6, 100, 4);
 
         CHECK_THROWS_WITH(aut.is_complete(&alph),
-            Catch::Contains("symbol that is not in the provided alphabet"));
+            Catch::Matchers::ContainsSubstring("symbol that is not in the provided alphabet"));
     }
 } // }}}
 
@@ -3138,19 +3139,19 @@ TEST_CASE("mata::nfa::reduce_size_by_residual()") {
     SECTION("error checking")
     {
         CHECK_THROWS_WITH(reduce(aut, &state_renaming, params_after),
-                          Catch::Contains("requires setting the \"type\" key in the \"params\" argument;"));
+                          Catch::Matchers::ContainsSubstring("requires setting the \"type\" key in the \"params\" argument;"));
 
         params_after["type"] = "bad_type";
         CHECK_THROWS_WITH(reduce(aut, &state_renaming, params_after),
-                          Catch::Contains("requires setting the \"direction\" key in the \"params\" argument;"));
+                          Catch::Matchers::ContainsSubstring("requires setting the \"direction\" key in the \"params\" argument;"));
 
         params_after["direction"] = "unknown_direction";
         CHECK_THROWS_WITH(reduce(aut, &state_renaming, params_after),
-                          Catch::Contains("received an unknown value of the \"direction\" key"));
+                          Catch::Matchers::ContainsSubstring("received an unknown value of the \"direction\" key"));
 
         params_after["direction"] = "forward";
         CHECK_THROWS_WITH(reduce(aut, &state_renaming, params_after),
-                          Catch::Contains("received an unknown value of the \"type\" key"));
+                          Catch::Matchers::ContainsSubstring("received an unknown value of the \"type\" key"));
 
         params_after["type"] = "after";
         CHECK_NOTHROW(reduce(aut, &state_renaming, params_after));

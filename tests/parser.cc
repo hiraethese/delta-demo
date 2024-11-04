@@ -7,7 +7,8 @@
 #include "mata/nfa/nfa.hh"
 #include "mata/nfa/builder.hh"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 using namespace mata::parser;
 using namespace mata::utils;
@@ -440,7 +441,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key2\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("expecting automaton type"));
+                          Catch::Matchers::ContainsSubstring("expecting automaton type"));
 	}
 
 	SECTION("trailing characters behind @TYPE")
@@ -449,7 +450,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"@Type another\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("invalid trailing characters"));
+                          Catch::Matchers::ContainsSubstring("invalid trailing characters"));
 	}
 
 	SECTION("missing type")
@@ -459,7 +460,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key2\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("expecting automaton type"));
+                          Catch::Matchers::ContainsSubstring("expecting automaton type"));
 	}
 
 	SECTION("unterminated quote")
@@ -469,7 +470,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1 \"value\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("missing ending quotes"));
+                          Catch::Matchers::ContainsSubstring("missing ending quotes"));
 	}
 
 	SECTION("unterminated quote 2")
@@ -479,7 +480,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1 \"\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("missing ending quotes"));
+                          Catch::Matchers::ContainsSubstring("missing ending quotes"));
 	}
 
 	SECTION("newlines within names")
@@ -496,7 +497,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"3\"";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("missing ending quotes"));
+                          Catch::Matchers::ContainsSubstring("missing ending quotes"));
 	}
 
 	SECTION("quoted strings starting in the middle of strings")
@@ -506,7 +507,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1 val\"ue\"\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("misplaced quotes"));
+                          Catch::Matchers::ContainsSubstring("misplaced quotes"));
 	}
 
 	SECTION("quoted strings ending in the middle of strings")
@@ -516,7 +517,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1 \"val\"ue\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("misplaced quotes"));
+                          Catch::Matchers::ContainsSubstring("misplaced quotes"));
 	}
 
 	SECTION("incorrect position of special characters")
@@ -526,8 +527,8 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1 @here";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-			Catch::Contains("invalid position of @TYPE") &&
-			Catch::Contains("@here"));
+			Catch::Matchers::ContainsSubstring("invalid position of @TYPE") &&
+			Catch::Matchers::ContainsSubstring("@here"));
 	}
 
 	SECTION("incorrect position of special characters 2")
@@ -537,8 +538,8 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"q1 @here q2";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-			Catch::Contains("invalid position of @TYPE") &&
-			Catch::Contains("@here"));
+			Catch::Matchers::ContainsSubstring("invalid position of @TYPE") &&
+			Catch::Matchers::ContainsSubstring("@here"));
 	}
 
 	SECTION("incorrect position of special characters 3")
@@ -548,8 +549,8 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"q1 %here q2";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-			Catch::Contains("invalid position of %KEY") &&
-			Catch::Contains("%here"));
+			Catch::Matchers::ContainsSubstring("invalid position of %KEY") &&
+			Catch::Matchers::ContainsSubstring("%here"));
 	}
 
 	SECTION("incorrect position of special characters 4")
@@ -559,8 +560,8 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1 %here";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-			Catch::Contains("invalid position of %KEY") &&
-			Catch::Contains("%here"));
+			Catch::Matchers::ContainsSubstring("invalid position of %KEY") &&
+			Catch::Matchers::ContainsSubstring("%here"));
 	}
 
 	SECTION("no key name")
@@ -571,7 +572,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key2\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("%KEY name missing"));
+                          Catch::Matchers::ContainsSubstring("%KEY name missing"));
 	}
 
 	SECTION("special characters inside strings 1")
@@ -581,7 +582,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1     value@1\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("misplaced character \'@\'"));
+                          Catch::Matchers::ContainsSubstring("misplaced character \'@\'"));
 	}
 
 	SECTION("special characters inside strings 2")
@@ -591,7 +592,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key2     value%1\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("misplaced character \'%\'"));
+                          Catch::Matchers::ContainsSubstring("misplaced character \'%\'"));
 	}
 
 	SECTION("special characters inside strings 3")
@@ -601,7 +602,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key1     @value\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("invalid position of @TYPE"));
+                          Catch::Matchers::ContainsSubstring("invalid position of @TYPE"));
 	}
 
 	SECTION("special characters inside strings 4")
@@ -611,7 +612,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"%key2     %value\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("invalid position of %KEY"));
+                          Catch::Matchers::ContainsSubstring("invalid position of %KEY"));
 	}
 
 	SECTION("invalid use of quotes")
@@ -620,7 +621,7 @@ TEST_CASE("incorrect use of mata::Parser::parse_mf_section()")
 			"\"@Type\"\n";
 
 		CHECK_THROWS_WITH(parse_mf_section(file),
-                          Catch::Contains("expecting automaton type"));
+                          Catch::Matchers::ContainsSubstring("expecting automaton type"));
 	}
 } // parse_mf_section incorrect }}}
 

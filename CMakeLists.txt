@@ -53,12 +53,13 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v2.13.9 # TODO: maybe we should move to v3
+        GIT_TAG        v3.7.1
         )
         FetchContent_MakeAvailable(Catch2)
         list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/contrib)
-        include(Catch)
-        # Adds Catch2::Catch2
+        include(Catch) # Adds Catch2::Catch2WithMain and Catch2::Catch2
+        get_target_property(catch2_includes Catch2 INTERFACE_INCLUDE_DIRECTORIES)
+        target_include_directories(Catch2 SYSTEM INTERFACE ${catch2_includes})
     endif()
 
 endif()
@@ -101,7 +102,7 @@ endif ()
 if(MATA_ENABLE_COVERAGE)
     if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
         message(WARNING "Code coverage results with an optimised (non-Debug) build may be misleading")
-    endif() 
+    endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g --coverage")
 endif()
 
