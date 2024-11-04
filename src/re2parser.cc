@@ -252,7 +252,7 @@ namespace {
                     }
                 }
             }
-            RegexParser::renumber_states(output_nfa, prog_size, explicit_nfa);
+            *output_nfa = Nfa(explicit_nfa).trim();
         }
 
     private: // private methods
@@ -438,58 +438,6 @@ namespace {
                 }
                 nfa.final.insert(target_state);
             }
-        }
-
-        /**
-         * Renumbers the states of the input_nfa to be from <0, numberOfStates>
-         * @param program_size Size of the RE2 prog
-         * @param input_nfa Nfa which states should be renumbered
-         * @return Same Nfa as input_nfa but with states from interval <0, numberOfStates>
-         */
-        static Nfa renumber_states(Nfa* output_nfa,
-                                              size_t program_size,
-                                              Nfa &input_nfa) {
-            std::vector<mata::nfa::State> renumbered_states(program_size, mata::nfa::Limits::max_state);
-            Nfa& renumbered_explicit_nfa = *output_nfa;
-            for (mata::nfa::State state{ 0 }; state < program_size; state++) {
-                const auto& transition_list = input_nfa.delta.state_post(state);
-                // If the transition list is empty, the state is not used
-                if (transition_list.empty()) {
-                    continue;
-                } else {
-                    // addNewState returns next unused state of the new NFA, so we map it to the original state
-                    renumbered_states[state] = renumbered_explicit_nfa.add_state();
-                }
-            }
-
-            for (auto state: input_nfa.final) {
-                if (static_cast<int>(renumbered_states[state]) == -1) {
-                    renumbered_states[state] = renumbered_explicit_nfa.add_state();
-                }
-                renumbered_explicit_nfa.final.insert(renumbered_states[state]);
-            }
-
-            for (mata::nfa::State state{ 0 }; state < program_size; state++) {
-                const auto& transition_list = input_nfa.delta.state_post(state);
-                for (const auto& transition: transition_list) {
-                    for (auto stateTo: transition.targets) {
-                        if (renumbered_states[stateTo] == mata::nfa::Limits::max_state) {
-                            renumbered_states[stateTo] = renumbered_explicit_nfa.add_state();
-                        }
-                        assert(renumbered_states[state] <= renumbered_explicit_nfa.num_of_states());
-                        assert(renumbered_states[stateTo] <= renumbered_explicit_nfa.num_of_states());
-                        renumbered_explicit_nfa.delta.add(renumbered_states[state], transition.symbol,
-                                                          renumbered_states[stateTo]);
-                    }
-                }
-            }
-
-
-            for (auto state: input_nfa.initial) {
-                renumbered_explicit_nfa.initial.insert(renumbered_states[state]);
-            }
-
-            return renumbered_explicit_nfa;
         }
 
         /**
