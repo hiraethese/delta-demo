@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Helper script that runs experiments and generates .csv files.
 #
@@ -8,7 +8,7 @@
 
 usage() { {
         [ $# -gt 0 ] && echo "error: $1"
-        echo "usage: ./run_experiments.sh [opt1, ..., optn] [bench1, ..., benchm]"
+        echo "usage: ./run_pyco.sh [OPTION]... [BENCHMARK]..."
         echo "options:"
         echo "  -c|--config <conf.yaml>     configuration file in yaml format [default=jobs/bench-cade-23.yaml]"
         echo "  -t|--timeout <int>         timeout for each benchmark in seconds [default=60s]"
