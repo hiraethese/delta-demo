@@ -21,7 +21,7 @@ def load_dataframe(path):
     timeouts = {
         col: df[col].value_counts().get('TO', 0) for col in df.columns if col.endswith('runtime')
     }
-    df = df.applymap(transform).drop(columns=['name'])
+    df = df.map(transform).drop(columns=['name'])
     avgs = df.mean(numeric_only=True, skipna=True)
     meds = df.median(numeric_only=True, skipna=True)
     return avgs, meds, timeouts
