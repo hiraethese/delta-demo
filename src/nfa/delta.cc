@@ -324,7 +324,8 @@ StatePost& Delta::mutable_state_post(State q) {
     return state_posts_[q];
 }
 
-void Delta::defragment(const BoolVector& is_staying, const std::vector<State>& renaming) {
+// Note: Changed std::vector<State> to std::vector<Target>.
+void Delta::defragment(const BoolVector& is_staying, const std::vector<Target>& renaming) {
     //TODO: this function seems to be unreadable, should be refactored, maybe into several functions with a clear functionality?
 
     //first, indexes of post are filtered (places of to be removed states are taken by states on their right)
@@ -709,7 +710,8 @@ StateSet SynchronizedExistentialSymbolPostIterator::unify_targets() const {
     // }
 
     // Version with priority queue.
-    using TargetSetBeginEndPair = std::pair<StateSet::const_iterator, StateSet::const_iterator>;
+    // Note: Changed to TargetSet::const_iterator instead of StateSet::const_iterator.
+    using TargetSetBeginEndPair = std::pair<TargetSet::const_iterator, TargetSet::const_iterator>;
     auto compare = [](const auto& a, const auto& b) { return *(a.first) > *(b.first); };
     std::priority_queue<TargetSetBeginEndPair, std::vector<TargetSetBeginEndPair>, decltype(compare) > queue(compare);
     for (const StatePost::const_iterator& symbol_post_it: get_current()) {

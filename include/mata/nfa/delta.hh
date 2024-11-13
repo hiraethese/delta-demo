@@ -22,14 +22,14 @@ namespace mata::nfa {
 struct Transition {
     State source; ///< Source state.
     Symbol symbol; ///< Transition symbol.
-    State target; ///< Target state.
+    Target target; ///< Target state.
 
     Transition() : source(), symbol(), target() { }
     Transition(const Transition&) = default;
     Transition(Transition&&) = default;
     Transition &operator=(const Transition&) = default;
     Transition &operator=(Transition&&) = default;
-    Transition(const State source, const Symbol symbol, const State target)
+    Transition(const State source, const Symbol symbol, const Target target)
             : source(source), symbol(symbol), target(target) {}
 
     auto operator<=>(const Transition&) const = default;
@@ -41,7 +41,7 @@ struct Transition {
 class Move {
 public:
     Symbol symbol;
-    State target;
+    Target target;
 
     bool operator==(const Move&) const = default;
 }; // class Move.
@@ -54,7 +54,7 @@ public:
 class SymbolPost {
 public:
     Symbol symbol{};
-    StateSet targets{}; // TODO: Change this to CounterStateSet targets{}.
+    TargetSet targets{}; // Note: Changed StateSet to TargetSet (CounterStateSet).
 
     SymbolPost() = default;
     explicit SymbolPost(Symbol symbol) : symbol{ symbol }, targets{} {}
@@ -69,11 +69,11 @@ public:
     std::weak_ordering operator<=>(const SymbolPost& other) const { return symbol <=> other.symbol; }
     bool operator==(const SymbolPost& other) const { return symbol == other.symbol; }
 
-    StateSet::iterator begin() { return targets.begin(); }
-    StateSet::iterator end() { return targets.end(); }
+    TargetSet::iterator begin() { return targets.begin(); }
+    TargetSet::iterator end() { return targets.end(); }
 
-    StateSet::const_iterator cbegin() const { return targets.cbegin(); }
-    StateSet::const_iterator cend() const { return targets.cend(); }
+    TargetSet::const_iterator cbegin() const { return targets.cbegin(); }
+    TargetSet::const_iterator cend() const { return targets.cend(); }
 
     size_t count(State s) const { return targets.count(s); }
     bool empty() const { return targets.empty(); }
@@ -95,8 +95,8 @@ public:
 
     void erase(State s) { targets.erase(s); }
 
-    std::vector<State>::const_iterator find(State s) const { return targets.find(s); }
-    std::vector<State>::iterator find(State s) { return targets.find(s); }
+    std::vector<Target>::const_iterator find(State s) const { return targets.find(s); }
+    std::vector<Target>::iterator find(State s) { return targets.find(s); }
 }; // class mata::nfa::SymbolPost.
 
 /**
@@ -208,7 +208,7 @@ class StatePost::Moves::const_iterator {
 private:
     const StatePost* state_post_{ nullptr };
     StatePost::const_iterator symbol_post_it_{};
-    StateSet::const_iterator target_it_{};
+    TargetSet::const_iterator target_it_{}; // Note: Changed to TargetSet instead of StateSet.
     StatePost::const_iterator symbol_post_end_{};
     bool is_end_{ false };
     /// Internal allocated instance of @c Move which is set for the move currently iterated over and returned as
@@ -352,7 +352,7 @@ public:
      */
     StatePost& mutable_state_post(State src_state);
 
-    void defragment(const BoolVector& is_staying, const std::vector<State>& renaming);
+    void defragment(const BoolVector& is_staying, const std::vector<Target>& renaming);
 
     template <typename... Args>
     StatePost& emplace_back(Args&&... args) {
@@ -537,7 +537,7 @@ private:
     const Delta* delta_ = nullptr;
     size_t current_state_{};
     StatePost::const_iterator state_post_it_{};
-    StateSet::const_iterator symbol_post_it_{};
+    TargetSet::const_iterator symbol_post_it_{}; // Note: Changed to TargetSet instead of StateSet.
     bool is_end_{ false };
     Transition transition_{};
 

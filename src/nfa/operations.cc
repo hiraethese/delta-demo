@@ -1208,7 +1208,8 @@ std::optional<mata::Word> Nfa::get_word(const Symbol first_epsilon) const {
     if (initial.intersects_with(final)) { return Word{}; }
 
     /// Current state state post iterator, its end iterator, and iterator in the current symbol post to target states.
-    std::vector<std::tuple<StatePost::const_iterator, StatePost::const_iterator, StateSet::const_iterator>> worklist{};
+    /// Note: Changed targets_it StateSet::const_iterator to TargetSet::const_iterator.
+    std::vector<std::tuple<StatePost::const_iterator, StatePost::const_iterator, TargetSet::const_iterator>> worklist{};
     std::vector<bool> searched(num_of_states(), false);
     bool final_found{};
     for (const State initial_state: initial) {

@@ -24,14 +24,15 @@ struct CounterState {
     State state; ///< Automaton state.
     void* counter_ptr; ///< Pointer to the counter table when transitioning to a state.
 
-    // Constructor to allow implicit conversion from state.
-    CounterState(State state, void* counter_ptr = nullptr)
-        : state(state), counter_ptr(counter_ptr) {}
+    CounterState() : state(), counter_ptr(nullptr) {}
+    CounterState(const CounterState&) = default;
+    CounterState(CounterState&&) = default;
+    CounterState &operator=(const CounterState&) = default;
+    CounterState &operator=(CounterState&&) = default;
+    CounterState(State state, void* counter_ptr = nullptr) : state(state), counter_ptr(counter_ptr) {}
 
-    // Conversion operator to allow implicit conversion to state.
-    operator State() const { return state; }
+    auto operator<=>(const CounterState&) const = default;
 
-    // Comparison operators to allow comparison with state.
     bool operator==(State other) const { return state == other; }
     bool operator!=(State other) const { return state != other; }
     bool operator<(State other) const { return state < other; }
@@ -39,17 +40,37 @@ struct CounterState {
     bool operator>(State other) const { return state > other; }
     bool operator>=(State other) const { return state >= other; }
 
-    bool operator==(const CounterState& other) const {
-        return state == other.state && counter_ptr == other.counter_ptr;
+    operator State() const { return state; }
+};
+
+/// TODO: Can be very slow! Change this later.
+class CounterStateSet : public mata::utils::OrdVector<CounterState> {
+public:
+    CounterStateSet() = default;
+
+    explicit CounterStateSet(State state) {
+        this->push_back(CounterState(state));
     }
 
-    bool operator!=(const CounterState& other) const {
-        return state != other.state || counter_ptr != other.counter_ptr;
+    explicit CounterStateSet(const StateSet& state_set) {
+        for (const State& state : state_set) {
+            this->push_back(state);
+        }
+    }
+
+    operator StateSet() const {
+        StateSet state_set;
+        for (const auto& target : *this) {
+            state_set.push_back(target.state);
+        }
+        return state_set;
     }
 };
 
-// TODO: Conversion between CounterStateSet and StateSet.
-using CounterStateSet = mata::utils::OrdVector<CounterState>;
+// Note: Added for better readability.
+using Target = CounterState;
+// Note: Added for better readability.
+using TargetSet = CounterStateSet;
 
 struct Run {
     Word word{}; ///< A finite-length word.
@@ -85,5 +106,16 @@ struct Nfa; ///< A non-deterministic finite automaton.
 constexpr Symbol EPSILON = Limits::max_symbol;
 
 } // namespace mata::nfa.
+
+// Hash specialization for CounterState.
+namespace std {
+    template<>
+    struct hash<mata::nfa::CounterState> {
+        size_t operator()(const mata::nfa::CounterState& cs) const noexcept {
+            // Note: Hash the State (unsigned long).
+            return std::hash<mata::nfa::State>{}(cs.state);
+        }
+    };
+} // namespace std.
 
 #endif //MATA_TYPES_HH

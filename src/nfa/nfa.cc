@@ -126,7 +126,8 @@ Nfa& Nfa::trim(StateRenaming* state_renaming) {
     BoolVector useful_states{ get_useful_states() };
 #endif
     const size_t useful_states_size{ useful_states.size() };
-    std::vector<State> renaming(useful_states_size);
+    // Note: Changed std::vector<State> to std::vector<Target>.
+    std::vector<Target> renaming(useful_states_size);
     for(State new_state{ 0 }, orig_state{ 0 }; orig_state < useful_states_size; ++orig_state) {
         if (useful_states[orig_state]) {
             renaming[orig_state] = new_state;
