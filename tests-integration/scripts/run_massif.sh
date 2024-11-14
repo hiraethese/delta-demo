@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 print_usage() {
   echo "usage: ./run_massif.sh [OPTIONS] CMD"

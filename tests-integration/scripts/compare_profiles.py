@@ -21,7 +21,7 @@ def load_dataframe(path):
     timeouts = {
         col: df[col].value_counts().get('TO', 0) for col in df.columns if col.endswith('runtime')
     }
-    df = df.applymap(transform).drop(columns=['name'])
+    df = df.map(transform).drop(columns=['name'])
     avgs = df.mean(numeric_only=True, skipna=True)
     meds = df.median(numeric_only=True, skipna=True)
     return avgs, meds, timeouts
@@ -30,7 +30,7 @@ def load_dataframe(path):
 if __name__ == "__main__":
     profiles = sys.argv[1:]
     if len(profiles) == 0:
-        printf(f"usage: compare_profiles.py [target.csv baseline1.csv ... baselinen.csv]")
+        print(f"usage: compare_profiles.py [target.csv baseline1.csv ... baselinen.csv]")
 
     averages, medians, timeouts = [], [], []
     columns, to_columns = set(), set()

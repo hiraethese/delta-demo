@@ -3,7 +3,8 @@
 
 #include <unordered_set>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "mata/nfa/nfa.hh"
 #include "mata/nfa/strings.hh"

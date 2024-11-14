@@ -217,7 +217,24 @@ public:
      */
     Nfa& trim(StateRenaming* state_renaming = nullptr);
 
+    /**
+     * @brief Returns vector ret where ret[q] is the length of the shortest path from any initial state to q
+     */
     std::vector<State> distances_from_initial() const;
+
+    /**
+     * @brief Returns vector ret where ret[q] is the length of the shortest path from q to any final state
+     */
+    std::vector<State> distances_to_final() const;
+
+    /**
+     * @brief Get some shortest accepting run from state @p q
+     * 
+     * Assumes that @p q is a state of this automaton and that there is some accepting run from @p q
+     * 
+     * @param distances_to_final Vector of the lengths of the shortest runs from states (can be computed using distances_to_final())
+     */
+    Run get_shortest_accepting_run_from_state(State q, const std::vector<State>& distances_to_final) const;
 
     /**
      * Remove epsilon transitions from the automaton.
