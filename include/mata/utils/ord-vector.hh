@@ -70,7 +70,7 @@ bool is_sorted(const std::vector<Key>& vec) {
  *               Each elements in a set is also its key.
  */
 template<class Key> class OrdVector {
-private:  // Private data types
+protected:  // Private data types
 
 public:   // Public data types
     using VectorType = std::vector<Key>;
@@ -81,10 +81,10 @@ public:   // Public data types
     using const_reference = typename VectorType::const_reference;
     using reference = typename VectorType::reference;
 
-private:  // Private data members
+protected:  // Private data members
     VectorType vec_;
 
-private:  // Private methods
+protected:  // Private methods
     bool is_sorted() const { return mata::utils::is_sorted(vec_); }
 
 public:
