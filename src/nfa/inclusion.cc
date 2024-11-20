@@ -169,7 +169,7 @@ bool mata::nfa::algorithms::is_included_antichains(
                 bigger_succ = sync_iterator.unify_targets();
             }
 
-            for (const State& smaller_succ : smaller_move.targets) {
+            for (const auto& smaller_succ : smaller_move.targets) {
                 const ProdStateType succ = {smaller_succ, bigger_succ, min_dst(bigger_succ)};
 
                 if (lengths_incompatible(succ) ||

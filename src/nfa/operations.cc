@@ -907,7 +907,7 @@ bool mata::nfa::Nfa::is_lang_empty(Run* cex) const {
         if (delta.empty()) { continue; }
 
         for (const SymbolPost& symbol_post: delta[state]) {
-            for (const State& target: symbol_post.targets) {
+            for (const auto& target: symbol_post.targets) {
                 bool inserted;
                 tie(std::ignore, inserted) = processed.insert(target);
                 if (inserted) {
