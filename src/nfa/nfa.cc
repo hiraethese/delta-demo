@@ -1,4 +1,4 @@
-#include "../include/nfa.hh"
+#include "../../include/mata/nfa/nfa.hh"
 
 void Nfa::addInitialState(State state) {
     initial.insert(state);

@@ -1,4 +1,4 @@
-#include "../include/delta.hh"
+#include "../../include/mata/nfa/delta.hh"
 
 void StatePost::addTransition(Symbol symbol, const StateSet& targets) {
     transitions.emplace_back(symbol, targets);

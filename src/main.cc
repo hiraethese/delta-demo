@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unordered_set>
-#include "../include/delta.hh"
-#include "../include/nfa.hh"
+#include "../include/mata/nfa/delta.hh"
+#include "../include/mata/nfa//nfa.hh"
 
 int main() {
     Delta delta;

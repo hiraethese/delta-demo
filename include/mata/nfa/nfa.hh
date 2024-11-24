@@ -3,7 +3,7 @@
 
 #include <unordered_set>
 #include <string>
-#include "../include/delta.hh"
+#include "delta.hh"
 
 // TODO: Add description.
 struct Nfa {
