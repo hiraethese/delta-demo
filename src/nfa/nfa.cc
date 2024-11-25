@@ -27,10 +27,13 @@ bool Nfa::simulateRecursive(State currentState, const std::string& input, size_t
         return final.contains(currentState);
     }
 
-    Symbol symbol = static_cast<Symbol>(input[index]);
-    const auto& transitions = delta.states[currentState].transitions;
+    Symbol symbol = static_cast<Symbol>( input[index] );
 
-    for (const auto& transition : transitions) {
+    // Get the transitions for the current state
+    const auto& statePost = delta.getStatePost(currentState);
+
+    // Iterate through the transitions
+    for (const auto& transition : statePost) {
         if (transition.symbol == symbol || transition.symbol == 0) { // 0 for epsilon transitions. TODO: Add EPSILON.
             for (State target : transition.targets) {
                 if ( simulateRecursive(target, input, (transition.symbol == 0) ? index : index + 1) ) {

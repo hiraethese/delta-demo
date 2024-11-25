@@ -7,12 +7,12 @@ using namespace mata::nfa;
 using namespace mata::utils;
 
 int main() {
-    Delta delta;
+    Delta delta(4);
 
-    delta.addTransition(0, 'a', {0, 1});
-    delta.addTransition(1, 'b', {2});
-    delta.addTransition(2, 0, {3});
-    delta.addTransition(3, 'c', {3});
+    delta.add(0, 'a', {0, 1});
+    delta.add(1, 'b', 2);
+    delta.add(2, 0, 3);
+    delta.add(3, 'c', 3);
 
     SparseSet<State> initial = {0};
     SparseSet<State> final = {3};
