@@ -3,9 +3,10 @@
 
 #include <vector>
 
-using State = unsigned long;
-using Symbol = unsigned;
-using StateSet = std::vector<State>;
+#include "mata/utils/ord-vector.hh"
+#include "types.hh"
+
+namespace mata::nfa {
 
 // TODO: Add description.
 class SymbolPost {
@@ -20,10 +21,10 @@ public:
 // TODO: Add description.
 class StatePost {
 public:
-    std::vector<SymbolPost> transitions;
+    utils::OrdVector<SymbolPost> transitions;
 
     StatePost() = default;
-    StatePost(const std::vector<SymbolPost>& transitions) : transitions(transitions) {}
+    StatePost(const utils::OrdVector<SymbolPost>& transitions) : transitions(transitions) {}
 
     void addTransition(Symbol symbol, const StateSet& targets);
 };
@@ -39,5 +40,7 @@ public:
     void addState(const StatePost& statePost);
     void addTransition(State source, Symbol symbol, const StateSet& targets);
 };
+
+} // namespace mata::nfa.
 
 #endif // DELTA_HH

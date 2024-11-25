@@ -1,20 +1,23 @@
 #ifndef NFA_HH
 #define NFA_HH
 
-#include <unordered_set>
 #include <string>
+
 #include "delta.hh"
+#include "../utils/sparse-set.hh"
+
+namespace mata::nfa {
 
 // TODO: Add description.
 struct Nfa {
     Delta delta;
-    std::unordered_set<State> initial;
-    std::unordered_set<State> final;
+    utils::SparseSet<State> initial{};
+    utils::SparseSet<State> final{};
 
     Nfa() = default;
     Nfa(const Delta& delta,
-        const std::unordered_set<State>& initial,
-        const std::unordered_set<State>& final)
+        const utils::SparseSet<State>& initial,
+        const utils::SparseSet<State>& final)
         : delta(delta), initial(initial), final(final) {}
 
     void addInitialState(State state);
@@ -24,5 +27,7 @@ struct Nfa {
 private:
     bool simulateRecursive(State currentState, const std::string& input, size_t index) const;
 };
+
+} // namespace mata::nfa.
 
 #endif // NFA_HH

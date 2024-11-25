@@ -1,7 +1,10 @@
 #include <iostream>
-#include <unordered_set>
+
 #include "../include/mata/nfa/delta.hh"
 #include "../include/mata/nfa//nfa.hh"
+
+using namespace mata::nfa;
+using namespace mata::utils;
 
 int main() {
     Delta delta;
@@ -11,8 +14,8 @@ int main() {
     delta.addTransition(2, 0, {3});
     delta.addTransition(3, 'c', {3});
 
-    std::unordered_set<State> initial = {0};
-    std::unordered_set<State> final = {3};
+    SparseSet<State> initial = {0};
+    SparseSet<State> final = {3};
 
     Nfa nfa(delta, initial, final);
 

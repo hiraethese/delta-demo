@@ -1,5 +1,7 @@
 #include "../../include/mata/nfa/delta.hh"
 
+using namespace mata::nfa;
+
 void StatePost::addTransition(Symbol symbol, const StateSet& targets) {
     transitions.emplace_back(symbol, targets);
 }

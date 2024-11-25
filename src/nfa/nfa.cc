@@ -1,5 +1,7 @@
 #include "../../include/mata/nfa/nfa.hh"
 
+using namespace mata::nfa;
+
 void Nfa::addInitialState(State state) {
     initial.insert(state);
 }
@@ -20,9 +22,9 @@ bool Nfa::simulate(const std::string& input) const {
 
 // Recursive helper function to simulate the NFA
 bool Nfa::simulateRecursive(State currentState, const std::string& input, size_t index) const {
-    if (index == input.size()) {
+    if ( index == input.size() ) {
         // Note: If we reach the end of the input, check if the current state is accepting.
-        return final.count(currentState) > 0;
+        return final.contains(currentState);
     }
 
     Symbol symbol = static_cast<Symbol>(input[index]);
