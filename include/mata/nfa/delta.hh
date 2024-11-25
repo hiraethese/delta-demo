@@ -4,6 +4,7 @@
 	Core Mata Structure.
     @author Mata Group
     https://github.com/VeriFIT/mata/blob/devel/include/mata/nfa/delta.hh
+    https://github.com/hiraethese/mata/blob/counter-feature/include/mata/nfa/delta.hh
 */
 
 #ifndef DELTA_HH
@@ -20,7 +21,7 @@ namespace mata::nfa {
 class SymbolPost {
 public:
     Symbol symbol{};
-    StateSet targets{};
+    TargetSet targets{}; // Changed StateSet to TargetSet (CounterStateSet).
 
     SymbolPost() = default;
     explicit SymbolPost(Symbol symbol) : symbol{ symbol }, targets{} {}
