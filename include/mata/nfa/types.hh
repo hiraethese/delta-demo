@@ -4,6 +4,9 @@
 #ifndef TYPES_HH
 #define TYPES_HH
 
+#include <iostream>
+#include <limits>
+
 #include "mata/utils/ord-vector.hh"
 
 namespace mata::nfa {
@@ -87,9 +90,101 @@ public:
     }
 };
 
+// TODO: Choose the best value for counters.
+using CounterValue = unsigned long;
+using CounterValueSet = mata::utils::OrdVector<CounterValue>;
+
+/// Register for counters.
+struct CounterRegister {
+    CounterValue value; ///< Current counter value.
+    CounterValue initial_value; ///< Initial counter value.
+
+    CounterRegister() : value(0), initial_value(0) {}
+    CounterRegister(CounterValue value) : value(value), initial_value(value) {}
+
+    CounterRegister(const CounterRegister&) = default;
+    CounterRegister(CounterRegister&&) = default;
+    CounterRegister& operator=(const CounterRegister&) = default;
+    CounterRegister& operator=(CounterRegister&&) = default;
+
+    CounterRegister& operator=(CounterValue other) { value = other; return *this; }
+
+    auto operator<=>(const CounterValue& other) const { return value <=> other; }
+    bool operator==(const CounterValue& other) const { return value == other; }
+    auto operator<=>(const CounterRegister&) const = default;
+    bool operator==(const CounterRegister& other) const = default;
+
+    operator CounterValue() const { return value; }
+
+    // Increment the counter by 1 (or specified amount).
+    void increment(CounterValue amount = 1) {
+        if (value > std::numeric_limits<CounterValue>::max() - amount) {
+            throw std::overflow_error("CounterRegister: Increment operation would result in overflow.");
+        }
+        value += amount;
+    }
+    // Decrement the counter by 1 (or specified amount).
+    void decrement(CounterValue amount = 1) {
+        if (amount > value) {
+            throw std::underflow_error("CounterRegister: Decrement operation would result in a negative value.");
+        }
+        value -= amount;
+    }
+    // Reset the counter to its initial value.
+    void reset() { value = initial_value; }
+    // Note: Custom debug output. This should be removed later.
+    void print() const { std::cout << "Current value: " << value << ", Initial value: " << initial_value << "\n"; }
+};
+
+class CounterRegisterSet : public mata::utils::OrdVector<CounterRegister> {
+public:
+    CounterRegisterSet() = default;
+
+    CounterRegisterSet(CounterValue value) {
+        this->push_back(CounterRegister(value));
+    }
+    CounterRegisterSet(CounterValueSet& value_set) {
+        for (const CounterValue& value: value_set) {
+            this->push_back(value);
+        }
+    }
+    CounterRegisterSet(CounterValueSet&& value_set) {
+        for (const CounterValue& value: value_set) {
+            this->push_back(value);
+        }
+    }
+    CounterRegisterSet& operator=(const CounterValueSet& value_set) {
+        for (const CounterValue& value: value_set) {
+            this->push_back(value);
+        }
+        return *this;
+    }
+    CounterRegisterSet& operator=(CounterValueSet&& value_set) {
+        for (const CounterValue& value: value_set) {
+            this->push_back(value);
+        }
+        return *this;
+    }
+
+    CounterRegisterSet(const CounterRegisterSet& counter_register_set) = default;
+    CounterRegisterSet(CounterRegisterSet&& counter_register_set) noexcept = default;
+    CounterRegisterSet& operator=(const CounterRegisterSet& counter_register_set) = default;
+    CounterRegisterSet& operator=(CounterRegisterSet&& counter_register_set) noexcept = default;
+
+    operator CounterValueSet() const {
+        CounterValueSet counter_value_set;
+        for (const auto& counter_register : *this) {
+            counter_value_set.push_back(counter_register.value);
+        }
+        return counter_value_set;
+    }
+};
+
 // Added for better readability.
 using Target = CounterState;
 using TargetSet = CounterStateSet;
+using Counter = CounterRegister;
+using CounterSet = CounterRegisterSet;
 
 } // namespace mata::nfa.
 

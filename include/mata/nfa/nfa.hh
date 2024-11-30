@@ -13,12 +13,14 @@ struct Nfa {
     Delta delta;
     utils::SparseSet<State> initial{};
     utils::SparseSet<State> final{};
+    CounterSet counters{}; // Added CounterSet (CounterRegisterSet) member for NFA counters.
 
     Nfa() = default;
     Nfa(const Delta& delta,
         const utils::SparseSet<State>& initial,
-        const utils::SparseSet<State>& final)
-        : delta(delta), initial(initial), final(final) {}
+        const utils::SparseSet<State>& final,
+        const CounterSet& counters)
+        : delta(delta), initial(initial), final(final), counters(counters) {}
 
     void addInitialState(State state);
     void addFinalState(State state);

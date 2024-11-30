@@ -17,7 +17,10 @@ int main() {
     SparseSet<State> initial = {0};
     SparseSet<State> final = {3};
 
-    Nfa nfa(delta, initial, final);
+    CounterSet counters;
+    counters.push_back(Counter(0));
+
+    Nfa nfa(delta, initial, final, counters);
 
     std::string testInputs[] = {"ab", "abc", "abccc", "a", "ac"};
 
