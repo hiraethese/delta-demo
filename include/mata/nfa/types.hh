@@ -96,11 +96,14 @@ using CounterValueSet = mata::utils::OrdVector<CounterValue>;
 
 /// Register for counters.
 struct CounterRegister {
+    int id; ///< Unique ID for the counter.
+    // Note: ID is temporary to show the properties of counters.
+    // TODO: Is there a need for a hash table with counters?
     CounterValue value; ///< Current counter value.
     CounterValue initial_value; ///< Initial counter value.
 
-    CounterRegister() : value(0), initial_value(0) {}
-    CounterRegister(CounterValue value) : value(value), initial_value(value) {}
+    CounterRegister() : id(-1), value(0), initial_value(0) {}
+    CounterRegister(int id, CounterValue value) : id(id), value(value), initial_value(value) {}
 
     CounterRegister(const CounterRegister&) = default;
     CounterRegister(CounterRegister&&) = default;
@@ -133,37 +136,31 @@ struct CounterRegister {
     // Reset the counter to its initial value.
     void reset() { value = initial_value; }
     // Note: Custom debug output. This should be removed later.
-    void print() const { std::cout << "Current value: " << value << ", Initial value: " << initial_value << "\n"; }
+    void print() const {
+        std::cout << "ID: " << id << ", Value: " << value << ", Initial: " << initial_value << "\n";
+    }
 };
 
 class CounterRegisterSet : public mata::utils::OrdVector<CounterRegister> {
 public:
     CounterRegisterSet() = default;
 
-    CounterRegisterSet(CounterValue value) {
-        this->push_back(CounterRegister(value));
+    CounterRegisterSet(int id, CounterValue value) {
+        this->push_back(CounterRegister(id, value));
     }
-    CounterRegisterSet(CounterValueSet& value_set) {
+    CounterRegisterSet(int id_start, CounterValueSet& value_set) {
+        int id = id_start; // TODO: Change this later to better counter ID. Use this approach to test counters.
         for (const CounterValue& value: value_set) {
-            this->push_back(value);
+            this->push_back(CounterRegister(id, value));
+            ++id;
         }
     }
-    CounterRegisterSet(CounterValueSet&& value_set) {
+    CounterRegisterSet(int id_start, CounterValueSet&& value_set) {
+        int id = id_start; // TODO: Change this later to better counter ID. Use this approach to test counters.
         for (const CounterValue& value: value_set) {
-            this->push_back(value);
+            this->push_back(CounterRegister(id, value));
+            ++id;
         }
-    }
-    CounterRegisterSet& operator=(const CounterValueSet& value_set) {
-        for (const CounterValue& value: value_set) {
-            this->push_back(value);
-        }
-        return *this;
-    }
-    CounterRegisterSet& operator=(CounterValueSet&& value_set) {
-        for (const CounterValue& value: value_set) {
-            this->push_back(value);
-        }
-        return *this;
     }
 
     CounterRegisterSet(const CounterRegisterSet& counter_register_set) = default;

@@ -18,7 +18,7 @@ int main() {
     SparseSet<State> final = {3};
 
     CounterSet counters;
-    counters.push_back(Counter(0));
+    counters.push_back(Counter(0, 0));
 
     Nfa nfa(delta, initial, final, counters);
 
