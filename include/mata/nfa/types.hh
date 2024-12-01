@@ -4,6 +4,7 @@
 #ifndef TYPES_HH
 #define TYPES_HH
 
+#include <cstddef>
 #include <iostream>
 #include <limits>
 
@@ -147,6 +148,7 @@ public:
     void addCounter(CounterValue value) {
         counters.emplace_back(counters.size(), value);
     }
+    // TODO: Change this to operator.
     CounterRegister& getCounter(size_t id) {
         if (id >= counters.size()) {
             throw std::runtime_error("CounterRegisterSet: Counter with this ID does not exist.");
@@ -158,6 +160,16 @@ public:
             throw std::runtime_error("CounterRegisterSet: Counter with this ID does not exist.");
         }
         return counters[id];
+    }
+    // This implementation of getCounter is probably better.
+    CounterRegister& operator[](size_t id) {
+        return counters[id];
+    }
+    const CounterRegister& operator[](size_t id) const {
+        return counters[id];
+    }
+    size_t size() {
+        return counters.size();
     }
     // Note: Custom debug output. This should be removed later.
     void print() const {
