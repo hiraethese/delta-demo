@@ -30,16 +30,12 @@ struct CounterState {
 
     CounterState(const State& state): state{ state }, counter_ptr(nullptr) {} // NOLINT(*-explicit-constructor)
     CounterState(State&& state): state{ state }, counter_ptr(nullptr) {} // NOLINT(*-explicit-constructor)
-    CounterState& operator=(const State& other) { state = other; return *this; }
-    CounterState& operator=(State&& other) { state = other; return *this; }
-
     CounterState(const State state, void* counter_ptr) : state(state), counter_ptr(counter_ptr) {} // NOLINT(*-explicit-constructor)
 
     auto operator<=>(const State& other) const { return state <=> other; }
     bool operator==(const State other) const { return state == other; }
     auto operator<=>(const CounterState&) const = default;
     bool operator==(const CounterState& other) const { return state == other; }
-
 
     operator State() const { return state; } // NOLINT(*-explicit-constructor)
 };
@@ -73,6 +69,7 @@ public:
         }
         return *this;
     }
+
     CounterStateSet(const CounterStateSet& counter_state_set) = default;
     CounterStateSet(CounterStateSet&& counter_state_set) noexcept = default;
     CounterStateSet& operator=(const CounterStateSet& counter_state_set) = default;
@@ -96,14 +93,14 @@ using CounterValueSet = mata::utils::OrdVector<CounterValue>;
 
 /// Register for counters.
 struct CounterRegister {
-    int id; ///< Unique ID for the counter.
-    // Note: ID is temporary to show the properties of counters.
-    // TODO: Is there a need for a hash table with counters?
+    size_t id; ///< Unique ID for the counter.
+    // Note: ID is the index in the counters vector.
+    // TODO: Is this a good idea? Think about better solutions.
     CounterValue value; ///< Current counter value.
     CounterValue initial_value; ///< Initial counter value.
 
-    CounterRegister() : id(-1), value(0), initial_value(0) {}
-    CounterRegister(int id, CounterValue value) : id(id), value(value), initial_value(value) {}
+    CounterRegister() = default;
+    CounterRegister(size_t id, CounterValue value) : id(id), value(value), initial_value(value) {}
 
     CounterRegister(const CounterRegister&) = default;
     CounterRegister(CounterRegister&&) = default;
@@ -113,9 +110,7 @@ struct CounterRegister {
     CounterRegister& operator=(CounterValue other) { value = other; return *this; }
 
     auto operator<=>(const CounterValue& other) const { return value <=> other; }
-    bool operator==(const CounterValue& other) const { return value == other; }
     auto operator<=>(const CounterRegister&) const = default;
-    bool operator==(const CounterRegister& other) const = default;
 
     operator CounterValue() const { return value; }
 
@@ -141,40 +136,37 @@ struct CounterRegister {
     }
 };
 
-class CounterRegisterSet : public mata::utils::OrdVector<CounterRegister> {
+class CounterRegisterSet {
+private:
+    std::vector<CounterRegister> counters; ///< Stores counters.
+
 public:
+    // TODO: Add the necessary constructors later.
     CounterRegisterSet() = default;
 
-    CounterRegisterSet(int id, CounterValue value) {
-        this->push_back(CounterRegister(id, value));
+    void addCounter(CounterValue value) {
+        counters.emplace_back(counters.size(), value);
     }
-    CounterRegisterSet(int id_start, CounterValueSet& value_set) {
-        int id = id_start; // TODO: Change this later to better counter ID. Use this approach to test counters.
-        for (const CounterValue& value: value_set) {
-            this->push_back(CounterRegister(id, value));
-            ++id;
+    CounterRegister& getCounter(size_t id) {
+        if (id >= counters.size()) {
+            throw std::runtime_error("CounterRegisterSet: Counter with this ID does not exist.");
+        }
+        return counters[id];
+    }
+    const CounterRegister& getCounter(size_t id) const {
+        if (id >= counters.size()) {
+            throw std::runtime_error("CounterRegisterSet: Counter with this ID does not exist.");
+        }
+        return counters[id];
+    }
+    // Note: Custom debug output. This should be removed later.
+    void print() const {
+        for (const auto& counter : counters) {
+            counter.print();
         }
     }
-    CounterRegisterSet(int id_start, CounterValueSet&& value_set) {
-        int id = id_start; // TODO: Change this later to better counter ID. Use this approach to test counters.
-        for (const CounterValue& value: value_set) {
-            this->push_back(CounterRegister(id, value));
-            ++id;
-        }
-    }
-
-    CounterRegisterSet(const CounterRegisterSet& counter_register_set) = default;
-    CounterRegisterSet(CounterRegisterSet&& counter_register_set) noexcept = default;
-    CounterRegisterSet& operator=(const CounterRegisterSet& counter_register_set) = default;
-    CounterRegisterSet& operator=(CounterRegisterSet&& counter_register_set) noexcept = default;
-
-    operator CounterValueSet() const {
-        CounterValueSet counter_value_set;
-        for (const auto& counter_register : *this) {
-            counter_value_set.push_back(counter_register.value);
-        }
-        return counter_value_set;
-    }
+    // TODO: Add counter removal later.
+    // TODO: Add iterators later.
 };
 
 // Added for better readability.
