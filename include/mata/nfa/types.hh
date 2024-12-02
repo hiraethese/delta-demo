@@ -22,6 +22,20 @@ struct CounterState {
     State state; ///< Automaton state.
     void* counter_ptr; ///< Pointer to the counter table when transitioning to a state.
 
+    // Notes about (void* counter_ptr):
+    // It seems that using void pointer is not very user friendly.
+    // Ideally use a pointer to a vector of pointers to TransitionAnnotation objects.
+    // This will most likely lead to a problem with casting from one type to another.
+    // This is inconvenient for testing and will most likely slow down the library.
+
+    // Example of using:
+    // Create a vector of pointers to TransitionAnnotation objects.
+    // Cast the pointer to this vector to the void pointer to use in (void* counter_ptr).
+    // To reuse this vector, you will have to cast it back to the original type.
+
+    // Conclusion:
+    // This approach is not very useful.
+
     CounterState() : state(), counter_ptr(nullptr) {}
 
     CounterState(const CounterState&) = default;
