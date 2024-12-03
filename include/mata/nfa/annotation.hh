@@ -3,6 +3,8 @@
 #ifndef ANNOTATION_HH
 #define ANNOTATION_HH
 
+#include <memory>
+
 #include "types.hh"
 
 namespace mata::nfa {
@@ -44,6 +46,14 @@ public:
     }
 };
 // TODO: Add CounterTest class.
+
+using TransitionAnnotationPtr = std::unique_ptr<TransitionAnnotation>;
+using TransitionAnnotations = std::vector<TransitionAnnotationPtr>;
+
+// Note: Theta is used to simplify the name of the TransitionAnnotations collection.
+// TODO: Try to recreate this like a class Theta (or any other Greek letter) to encapsulate the logic.
+// Theta should be similar to Delta? Probably yes. Ask about this approach.
+using Theta = std::vector<TransitionAnnotations>;
 
 } // namespace mata::nfa.
 
