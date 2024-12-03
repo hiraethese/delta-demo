@@ -36,3 +36,6 @@ build/
 
 # Environment related
 .vscode/
+
+# Folders from original Mata
+tests-integration/
